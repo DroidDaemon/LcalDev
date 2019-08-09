@@ -2,10 +2,12 @@ package com.example.droiddaemon.lcaldev.DataBase;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.example.droiddaemon.lcaldev.util.SharedPrefKeys;
+import com.google.android.gms.maps.model.LatLng;
 
 public class SharedPrefsService implements IDatabaseService {
 
@@ -49,6 +51,39 @@ public class SharedPrefsService implements IDatabaseService {
     @Override
     public void removeEmail() {
 
+    }
+
+    @Override
+    public void saveLatLng(Location location) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(SharedPrefKeys.SHARED_PREF_LAT, String.valueOf(location.getLatitude()));
+        editor.putString(SharedPrefKeys.SHARED_PREF_LNG, String.valueOf(location.getLongitude()));
+        editor.apply();
+    }
+
+    @Override
+    public LatLng getLatLng() {
+
+        String latString = sharedPreferences.getString(SharedPrefKeys.SHARED_PREF_LAT, null);
+        String lngString = sharedPreferences.getString(SharedPrefKeys.SHARED_PREF_LNG, null);
+        Double lat = null;
+        Double lng = null;
+
+        try {
+            if (latString != null) {
+                lat = Double.valueOf(latString);
+                lng = Double.valueOf(lngString);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage() != null ? e.getMessage() : "Exception", e);
+            return null;
+        }
+
+        if (lat != null && lng != null) {
+            return new LatLng(lat, lng);
+        } else {
+            return null;
+        }
     }
 
 

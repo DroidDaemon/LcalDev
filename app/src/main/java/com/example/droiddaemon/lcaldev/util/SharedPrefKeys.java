@@ -6,5 +6,7 @@ public class SharedPrefKeys {
     public static final String SHARED_PREFS_USERNAME = "USERNAME";
     public static final String SHARED_PREFS_COUNTRY = "COUNTRY";
     public static final String SHARED_PREFS_EMAIL = "EMAIL";
+    public static final String SHARED_PREF_LAT = "LAT";
+    public static final String SHARED_PREF_LNG = "LNG";
 
 }

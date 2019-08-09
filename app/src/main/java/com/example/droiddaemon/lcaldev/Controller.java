@@ -1,6 +1,8 @@
 package com.example.droiddaemon.lcaldev;
 
 import android.content.Context;
+import android.location.Location;
+
 import com.example.droiddaemon.lcaldev.DataBase.CachingService;
 import com.example.droiddaemon.lcaldev.DataBase.DatabaseHelper;
 import com.example.droiddaemon.lcaldev.DataBase.IDatabaseService;
@@ -9,6 +11,7 @@ import com.example.droiddaemon.lcaldev.model.RetroItem;
 import com.example.droiddaemon.lcaldev.retrofit.APIInterface;
 import com.example.droiddaemon.lcaldev.retrofit.RetrofitClientInstance;
 import com.example.droiddaemon.lcaldev.retrofit.WebAPICall;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +45,13 @@ public class Controller {
 
     public final String getUsername() {
         return databaseService.getUsername();
+    }
+
+    public final void saveLatLng(Location location) {
+        databaseService.saveLatLng(location);
+    }
+    public final LatLng getLatLng() {
+        return databaseService.getLatLng();
     }
 
 
