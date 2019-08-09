@@ -3,6 +3,8 @@ package com.example.droiddaemon.lcaldev.fragments;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +20,7 @@ import android.widget.Toast;
 import com.example.droiddaemon.lcaldev.Controller;
 import com.example.droiddaemon.lcaldev.R;
 import com.example.droiddaemon.lcaldev.SharedApplication;
+import com.example.droiddaemon.lcaldev.activity.MainActivity;
 import com.example.droiddaemon.lcaldev.adapter.FruitAdapter;
 import com.example.droiddaemon.lcaldev.adapter.HomeAdapter;
 import com.example.droiddaemon.lcaldev.listeners.NetworkDataListener;
@@ -28,8 +31,10 @@ import com.example.droiddaemon.lcaldev.retrofit.APIInterface;
 import com.example.droiddaemon.lcaldev.retrofit.RetrofitClientInstance;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,8 +47,8 @@ public class DashboardFragment extends android.support.v4.app.Fragment implement
     private ArrayList<Item> arrayList;
     ProgressDialog progressDoalog;
     HomeAdapter adapter;
-    double lat = 28.4625;
-    double lng = 77.0564;
+    double lat = 28.464926;
+    double lng = 77.056155;
     private ArrayList<H_Recycler_fruit> imageModelArrayList;
     private FruitAdapter adapterFruit;
     private Controller controller;
@@ -69,8 +74,7 @@ public class DashboardFragment extends android.support.v4.app.Fragment implement
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.content_main, container, false);
         controller = ((SharedApplication) getActivity().getApplication()).getAppController();
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("L");
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
         initViews(view);
         return view;
     }
@@ -116,7 +120,8 @@ public class DashboardFragment extends android.support.v4.app.Fragment implement
     @Override
     public void onItemClick(Item item) {
         Toast.makeText(getActivity(), item.text + " is clicked", Toast.LENGTH_SHORT).show();
-        controller.fetchNetworkData(context, this);
+//        controller.fetchNetworkData(context, this);
+       getAddress();
     }
 
     private void generateDataList(List<RetroItem> body) {
@@ -134,5 +139,28 @@ public class DashboardFragment extends android.support.v4.app.Fragment implement
     public void fetchNetworkDataFailure(String msg) {
         Log.e("Response", msg);
 
+    }
+
+
+    public String getAddress() {
+        Geocoder geocoder;
+        List<Address> addresses;
+        geocoder = new Geocoder(getActivity(), Locale.getDefault());
+
+        try {
+            addresses = geocoder.getFromLocation(lat, lng, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+            String city = addresses.get(0).getLocality();
+            String state = addresses.get(0).getAdminArea();
+            String country = addresses.get(0).getCountryName();
+            String postalCode = addresses.get(0).getPostalCode();
+            String knownName = addresses.get(0).getFeatureName();
+            String add = city+" "+state+" - "+postalCode;
+            return add;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return "";
     }
 }

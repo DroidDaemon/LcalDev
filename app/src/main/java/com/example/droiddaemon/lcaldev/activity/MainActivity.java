@@ -1,6 +1,8 @@
 package com.example.droiddaemon.lcaldev.activity;
 
 import android.app.ProgressDialog;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Window;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.droiddaemon.lcaldev.R;
@@ -19,9 +22,11 @@ import com.example.droiddaemon.lcaldev.fragments.DashboardFragment;
 import com.example.droiddaemon.lcaldev.model.H_Recycler_fruit;
 import com.example.droiddaemon.lcaldev.model.Item;
 import com.example.droiddaemon.lcaldev.model.RetroItem;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Locale;
 
 
 public class MainActivity extends AppCompatActivity implements HomeAdapter.ItemListener {
@@ -37,18 +42,21 @@ public class MainActivity extends AppCompatActivity implements HomeAdapter.ItemL
     private FruitAdapter adapterFruit;
     private int[] myImageList = new int[]{R.drawable.beer, R.drawable.ferrari, R.drawable.battle, R.drawable.three_d, R.drawable.jetpack_joyride, R.drawable.terraria, R.drawable.beer};
     private String[] myImageNameList = new String[]{"Apple", "Mango", "Strawberry", "Pineapple", "Orange", "Blueberry", "Watermelon"};
-
+    TextView toolbarTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbarTextView = (TextView) findViewById(R.id.toolbarTextView);
+
+
         setSupportActionBar(toolbar);
         Window window = getWindow();
         window.setStatusBarColor(getResources().getColor(R.color.colorDark));
-
-
+        String address  = getAddress();
+        setAddress(address);
         Fragment DashboardFragment = new DashboardFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -86,6 +94,32 @@ public class MainActivity extends AppCompatActivity implements HomeAdapter.ItemL
 //        fetchNetworkData();
     }
 
+    private void setAddress(String address) {
+        toolbarTextView.setText(address);
+    }
+
+    public String getAddress() {
+        Geocoder geocoder;
+        List<Address> addresses;
+        geocoder = new Geocoder(this, Locale.getDefault());
+
+        try {
+            addresses = geocoder.getFromLocation(lat, lng, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+            String city = addresses.get(0).getLocality();
+            String state = addresses.get(0).getAdminArea();
+            String country = addresses.get(0).getCountryName();
+            String postalCode = addresses.get(0).getPostalCode();
+            String knownName = addresses.get(0).getFeatureName();
+            String add = city+" "+state+" - "+postalCode;
+            return add;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return "";
+    }
+
 //    private void fetchNetworkData() {
 //        progressDoalog = new ProgressDialog(MainActivity.this);
 //        progressDoalog.setMessage("Loading....");
@@ -121,9 +155,6 @@ public class MainActivity extends AppCompatActivity implements HomeAdapter.ItemL
     public void onItemClick(Item item) {
         Toast.makeText(getApplicationContext(), item.text + " is clicked", Toast.LENGTH_SHORT).show();
     }
-
-
-
 
 
 //    private ArrayList<H_Recycler_fruit> eatFruits() {
