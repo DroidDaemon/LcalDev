@@ -10,24 +10,22 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.droiddaemon.lcaldev.R;
+import com.example.droiddaemon.lcaldev.model.AllServiceModel;
+import com.example.droiddaemon.lcaldev.model.AllServiceRequestModel;
 import com.example.droiddaemon.lcaldev.model.Item;
 
 import java.util.ArrayList;
 
-/*
- * Created by Sambhaji Karad on 04-Jan-18
- * Mobile 9423476192
- * Email sambhaji2134@gmail.com/
-*/
 
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
-    private ArrayList<Item> mValues;
+    private ArrayList<AllServiceModel> mValues;
     private Context mContext;
     protected ItemListener mListener;
 
-    public HomeAdapter(Context context, ArrayList<Item> values, ItemListener itemListener) {
+    public HomeAdapter(Context context, ArrayList<AllServiceModel> values, ItemListener itemListener) {
         mValues = values;
         mContext = context;
         mListener=itemListener;
@@ -38,7 +36,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         private TextView textView;
         private ImageView imageView;
         private RelativeLayout relativeLayout;
-        private Item item;
+        private AllServiceModel item;
 
         public ViewHolder(View v) {
             super(v);
@@ -48,11 +46,19 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
             relativeLayout = (RelativeLayout) v.findViewById(R.id.relativeLayout);
         }
 
-        public void setData(Item item) {
+        public void setData(AllServiceModel item) {
             this.item = item;
-            textView.setText(item.text);
-            imageView.setImageResource(item.drawable);
-            relativeLayout.setBackgroundColor(Color.parseColor(item.color));
+            textView.setText(item.getName());
+//            imageView.setImageResource(item.drawable);
+//            relativeLayout.setBackgroundColor();
+            Glide.with(mContext)
+                    .load(item.getImageUrl())
+                    .crossFade()
+                    .into(imageView);
+
+
+
+
         }
 
         @Override
@@ -80,6 +86,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     }
 
     public interface ItemListener {
-        void onItemClick(Item item);
+        void onItemClick(AllServiceModel item);
     }
 }

@@ -20,15 +20,15 @@ import android.widget.Toast;
 import com.example.droiddaemon.lcaldev.Controller;
 import com.example.droiddaemon.lcaldev.R;
 import com.example.droiddaemon.lcaldev.SharedApplication;
-import com.example.droiddaemon.lcaldev.activity.MainActivity;
 import com.example.droiddaemon.lcaldev.adapter.FruitAdapter;
 import com.example.droiddaemon.lcaldev.adapter.HomeAdapter;
+import com.example.droiddaemon.lcaldev.listeners.AllServiceFetchListener;
 import com.example.droiddaemon.lcaldev.listeners.NetworkDataListener;
+import com.example.droiddaemon.lcaldev.model.AllServiceModel;
+import com.example.droiddaemon.lcaldev.model.AllServiceRequestModel;
 import com.example.droiddaemon.lcaldev.model.H_Recycler_fruit;
 import com.example.droiddaemon.lcaldev.model.Item;
 import com.example.droiddaemon.lcaldev.model.RetroItem;
-import com.example.droiddaemon.lcaldev.retrofit.APIInterface;
-import com.example.droiddaemon.lcaldev.retrofit.RetrofitClientInstance;
 
 
 import java.io.IOException;
@@ -36,15 +36,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-public class DashboardFragment extends android.support.v4.app.Fragment implements HomeAdapter.ItemListener, NetworkDataListener {
+public class DashboardFragment extends android.support.v4.app.Fragment implements HomeAdapter.ItemListener, NetworkDataListener, AllServiceFetchListener {
     Activity activity;
     private RecyclerView gridRecyclerView;
     private RecyclerView h_recyclerView;
     private ArrayList<Item> arrayList;
+    private ArrayList<AllServiceModel> allServiceModels;
     ProgressDialog progressDoalog;
     HomeAdapter adapter;
     double lat = 28.464926;
@@ -58,6 +55,7 @@ public class DashboardFragment extends android.support.v4.app.Fragment implement
     private String[] myImageNameList = new String[]{"Apple", "Mango", "Strawberry", "Pineapple", "Orange", "Blueberry", "Watermelon"};
 
     public DashboardFragment() {
+
     }
 
 
@@ -79,29 +77,29 @@ public class DashboardFragment extends android.support.v4.app.Fragment implement
         return view;
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+    }
+
     private void initViews(View view) {
         gridRecyclerView = (RecyclerView) view.findViewById(R.id.gridRecyclerView);
         h_recyclerView = (RecyclerView) view.findViewById(R.id.h_recyclerView);
         arrayList = new ArrayList<>();
+        allServiceModels = new ArrayList<AllServiceModel>();
         imageModelArrayList = eatFruits();
-        /////
         adapterFruit = new FruitAdapter(getActivity(), imageModelArrayList);
         h_recyclerView.setAdapter(adapterFruit);
         h_recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-        arrayList.add(new Item("Item 1", R.drawable.beer, "#000000"));
-        arrayList.add(new Item("Item 2", R.drawable.ferrari, "#000000"));
-        arrayList.add(new Item("Item 3", R.drawable.battle, "#000000"));
-        arrayList.add(new Item("Item 4", R.drawable.jetpack_joyride, "#000000"));
-        arrayList.add(new Item("Item 5", R.drawable.three_d, "#000000"));
-        arrayList.add(new Item("Item 6", R.drawable.terraria, "#000000"));
-        arrayList.add(new Item("Item 7", R.drawable.terraria, "#000000"));
-        arrayList.add(new Item("More Items", R.drawable.beer, "#000000"));
 
-        adapter = new HomeAdapter(getActivity(), arrayList, this);
+        adapter = new HomeAdapter(getActivity(), allServiceModels, this);
         gridRecyclerView.setAdapter(adapter);
 
         GridLayoutManager manager = new GridLayoutManager(getActivity(), 4, GridLayoutManager.VERTICAL, false);
         gridRecyclerView.setLayoutManager(manager);
+        controller.fetchAllServices(context, this);
+
     }
 
     private ArrayList<H_Recycler_fruit> eatFruits() {
@@ -118,10 +116,20 @@ public class DashboardFragment extends android.support.v4.app.Fragment implement
     }
 
     @Override
-    public void onItemClick(Item item) {
-        Toast.makeText(getActivity(), item.text + " is clicked", Toast.LENGTH_SHORT).show();
+    public void onItemClick(AllServiceModel item) {
+        Toast.makeText(getActivity(), item.getName() + " is clicked", Toast.LENGTH_SHORT).show();
+
 //        controller.fetchNetworkData(context, this);
-       getAddress();
+//        if (item.text.equals("More Items")) {
+//            Fragment allServicesFragment = new AllServicesFragment();
+//            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+//            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//            fragmentTransaction.setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+//
+//            fragmentTransaction.add(R.id.home_fragment_container, allServicesFragment).addToBackStack(AllServicesFragment.class.getName());
+//            fragmentTransaction.commit();
+//        }
+        getAddress();
     }
 
     private void generateDataList(List<RetroItem> body) {
@@ -155,12 +163,27 @@ public class DashboardFragment extends android.support.v4.app.Fragment implement
             String country = addresses.get(0).getCountryName();
             String postalCode = addresses.get(0).getPostalCode();
             String knownName = addresses.get(0).getFeatureName();
-            String add = city+" "+state+" - "+postalCode;
+            String add = city + " " + state + " - " + postalCode;
             return add;
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         return "";
+    }
+
+    @Override
+    public void onFetchAllserviceSuccess(ArrayList<AllServiceModel> allServiceModels) {
+        updateUI(allServiceModels);
+    }
+
+    private void updateUI(ArrayList<AllServiceModel> allServiceModel) {
+       allServiceModels.addAll(allServiceModel);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onFetchAllserviceFailure(String s) {
+
     }
 }

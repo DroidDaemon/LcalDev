@@ -19,6 +19,7 @@ import com.example.droiddaemon.lcaldev.R;
 import com.example.droiddaemon.lcaldev.adapter.FruitAdapter;
 import com.example.droiddaemon.lcaldev.adapter.HomeAdapter;
 import com.example.droiddaemon.lcaldev.fragments.DashboardFragment;
+import com.example.droiddaemon.lcaldev.model.AllServiceModel;
 import com.example.droiddaemon.lcaldev.model.H_Recycler_fruit;
 import com.example.droiddaemon.lcaldev.model.Item;
 import com.example.droiddaemon.lcaldev.model.RetroItem;
@@ -151,9 +152,12 @@ public class MainActivity extends AppCompatActivity implements HomeAdapter.ItemL
 
     }
 
+
+
     @Override
-    public void onItemClick(Item item) {
-        Toast.makeText(getApplicationContext(), item.text + " is clicked", Toast.LENGTH_SHORT).show();
+    public void onItemClick(AllServiceModel item) {
+        Toast.makeText(getApplicationContext(), item.getName() + " is clicked", Toast.LENGTH_SHORT).show();
+
     }
 
 
