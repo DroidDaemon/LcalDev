@@ -50,10 +50,31 @@
             </LinearLayout>
 
             <RelativeLayout
+                android:id="@+id/banner_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/search_linear"
+                android:padding="5dp"
+                android:background="@color/colorAccent"
+                >
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/banner_recyclerView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:scrollbars="vertical"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+            </RelativeLayout>
+
+
+
+            <RelativeLayout
                 android:id="@+id/grid"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/search_linear">
+                android:layout_below="@+id/banner_recycler">
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/gridRecyclerView"
@@ -66,14 +87,14 @@
 
 
             <RelativeLayout
-                android:id="@+id/horizontal_recycler"
+                android:id="@+id/vertical_recycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/grid"
                 android:layout_marginTop="5dp">
 
                 <android.support.v7.widget.RecyclerView
-                    android:id="@+id/h_recyclerView"
+                    android:id="@+id/v_recyclerView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="10dp"

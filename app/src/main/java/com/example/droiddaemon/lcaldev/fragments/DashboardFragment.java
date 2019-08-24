@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.example.droiddaemon.lcaldev.Controller;
 import com.example.droiddaemon.lcaldev.R;
 import com.example.droiddaemon.lcaldev.SharedApplication;
+import com.example.droiddaemon.lcaldev.adapter.BannerAdapter;
 import com.example.droiddaemon.lcaldev.adapter.FruitAdapter;
 import com.example.droiddaemon.lcaldev.adapter.HomeAdapter;
 import com.example.droiddaemon.lcaldev.listeners.AllServiceFetchListener;
@@ -36,10 +37,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class DashboardFragment extends android.support.v4.app.Fragment implements HomeAdapter.ItemListener, NetworkDataListener, AllServiceFetchListener {
+public class DashboardFragment extends android.support.v4.app.Fragment implements HomeAdapter.ItemListener, NetworkDataListener, AllServiceFetchListener, BannerAdapter.ItemListener {
     Activity activity;
     private RecyclerView gridRecyclerView;
-    private RecyclerView h_recyclerView;
+    private RecyclerView v_recyclerView;
+    private RecyclerView banner_recyclerView;
     private ArrayList<Item> arrayList;
     private ArrayList<AllServiceModel> allServiceModels;
     ProgressDialog progressDoalog;
@@ -48,6 +50,7 @@ public class DashboardFragment extends android.support.v4.app.Fragment implement
     double lng = 77.056155;
     private ArrayList<H_Recycler_fruit> imageModelArrayList;
     private FruitAdapter adapterFruit;
+    private BannerAdapter bannerAdapter;
     private Controller controller;
     private Context context;
 
@@ -85,16 +88,22 @@ public class DashboardFragment extends android.support.v4.app.Fragment implement
 
     private void initViews(View view) {
         gridRecyclerView = (RecyclerView) view.findViewById(R.id.gridRecyclerView);
-        h_recyclerView = (RecyclerView) view.findViewById(R.id.h_recyclerView);
+        v_recyclerView = (RecyclerView) view.findViewById(R.id.v_recyclerView);
+        banner_recyclerView = (RecyclerView) view.findViewById(R.id.banner_recyclerView);
         arrayList = new ArrayList<>();
         allServiceModels = new ArrayList<AllServiceModel>();
         imageModelArrayList = eatFruits();
+
         adapterFruit = new FruitAdapter(getActivity(), imageModelArrayList);
-        h_recyclerView.setAdapter(adapterFruit);
-        h_recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+
+        bannerAdapter = new BannerAdapter(getActivity(), allServiceModels,this);
+        banner_recyclerView.setAdapter(bannerAdapter);
+        banner_recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
 
         adapter = new HomeAdapter(getActivity(), allServiceModels, this);
         gridRecyclerView.setAdapter(adapter);
+        v_recyclerView.setAdapter(adapter);
+        v_recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 
         GridLayoutManager manager = new GridLayoutManager(getActivity(), 4, GridLayoutManager.VERTICAL, false);
         gridRecyclerView.setLayoutManager(manager);
@@ -118,17 +127,6 @@ public class DashboardFragment extends android.support.v4.app.Fragment implement
     @Override
     public void onItemClick(AllServiceModel item) {
         Toast.makeText(getActivity(), item.getName() + " is clicked", Toast.LENGTH_SHORT).show();
-
-//        controller.fetchNetworkData(context, this);
-//        if (item.text.equals("More Items")) {
-//            Fragment allServicesFragment = new AllServicesFragment();
-//            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-//            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//            fragmentTransaction.setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-//
-//            fragmentTransaction.add(R.id.home_fragment_container, allServicesFragment).addToBackStack(AllServicesFragment.class.getName());
-//            fragmentTransaction.commit();
-//        }
         getAddress();
     }
 
@@ -146,7 +144,6 @@ public class DashboardFragment extends android.support.v4.app.Fragment implement
     @Override
     public void fetchNetworkDataFailure(String msg) {
         Log.e("Response", msg);
-
     }
 
 
@@ -168,7 +165,6 @@ public class DashboardFragment extends android.support.v4.app.Fragment implement
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return "";
     }
 
@@ -178,7 +174,19 @@ public class DashboardFragment extends android.support.v4.app.Fragment implement
     }
 
     private void updateUI(ArrayList<AllServiceModel> allServiceModel) {
-       allServiceModels.addAll(allServiceModel);
+        updateGridView(allServiceModel);
+        bannerAdapter.notifyDataSetChanged();
+    }
+
+    private void updateGridView(ArrayList<AllServiceModel> allServiceModel) {
+        allServiceModels.clear();
+        if(allServiceModel.size() > 8){
+            for(int i =0;i<=8;i++){
+                allServiceModels.add(allServiceModel.get(i));
+            }
+        }else{
+            allServiceModels.addAll(allServiceModel);
+        }
         adapter.notifyDataSetChanged();
     }
 
