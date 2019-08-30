@@ -13,7 +13,7 @@ public class AllServiceRequestModel {
     @SerializedName("imageUrl")
     @Expose
     private String imageUrl;
-    @SerializedName("category")
+    @SerializedName("categoryName")
     @Expose
     private String category;
     @SerializedName("estimatedPrice")

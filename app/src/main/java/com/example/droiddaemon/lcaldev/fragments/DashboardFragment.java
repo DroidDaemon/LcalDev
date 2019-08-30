@@ -23,6 +23,7 @@ import com.example.droiddaemon.lcaldev.SharedApplication;
 import com.example.droiddaemon.lcaldev.adapter.BannerAdapter;
 import com.example.droiddaemon.lcaldev.adapter.FruitAdapter;
 import com.example.droiddaemon.lcaldev.adapter.HomeAdapter;
+import com.example.droiddaemon.lcaldev.adapter.VerticalAdapter;
 import com.example.droiddaemon.lcaldev.listeners.AllServiceFetchListener;
 import com.example.droiddaemon.lcaldev.listeners.NetworkDataListener;
 import com.example.droiddaemon.lcaldev.model.AllServiceModel;
@@ -37,20 +38,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class DashboardFragment extends android.support.v4.app.Fragment implements HomeAdapter.ItemListener, NetworkDataListener, AllServiceFetchListener, BannerAdapter.ItemListener {
+public class DashboardFragment extends android.support.v4.app.Fragment implements HomeAdapter.ItemListener, NetworkDataListener, AllServiceFetchListener, BannerAdapter.ItemListener, VerticalAdapter.VItemListener {
+    public static final String TAG = DashboardFragment.class.getSimpleName();
+
     Activity activity;
     private RecyclerView gridRecyclerView;
     private RecyclerView v_recyclerView;
     private RecyclerView banner_recyclerView;
     private ArrayList<Item> arrayList;
     private ArrayList<AllServiceModel> allServiceModels;
-    ProgressDialog progressDoalog;
     HomeAdapter adapter;
     double lat = 28.464926;
     double lng = 77.056155;
     private ArrayList<H_Recycler_fruit> imageModelArrayList;
     private FruitAdapter adapterFruit;
     private BannerAdapter bannerAdapter;
+    private VerticalAdapter verticalAdapter;
     private Controller controller;
     private Context context;
 
@@ -96,13 +99,15 @@ public class DashboardFragment extends android.support.v4.app.Fragment implement
 
         adapterFruit = new FruitAdapter(getActivity(), imageModelArrayList);
 
-        bannerAdapter = new BannerAdapter(getActivity(), allServiceModels,this);
-        banner_recyclerView.setAdapter(bannerAdapter);
+//        bannerAdapter = new BannerAdapter(getActivity(), allServiceModels, this);
+//        banner_recyclerView.setAdapter(bannerAdapter);
         banner_recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
 
         adapter = new HomeAdapter(getActivity(), allServiceModels, this);
+        verticalAdapter = new VerticalAdapter(getActivity(), allServiceModels, this);
+
         gridRecyclerView.setAdapter(adapter);
-        v_recyclerView.setAdapter(adapter);
+        v_recyclerView.setAdapter(verticalAdapter);
         v_recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 
         GridLayoutManager manager = new GridLayoutManager(getActivity(), 4, GridLayoutManager.VERTICAL, false);
@@ -180,11 +185,11 @@ public class DashboardFragment extends android.support.v4.app.Fragment implement
 
     private void updateGridView(ArrayList<AllServiceModel> allServiceModel) {
         allServiceModels.clear();
-        if(allServiceModel.size() > 8){
-            for(int i =0;i<=8;i++){
+        if (allServiceModel.size() >= 8) {
+            for (int i = 0; i <= 7; i++) {
                 allServiceModels.add(allServiceModel.get(i));
             }
-        }else{
+        } else {
             allServiceModels.addAll(allServiceModel);
         }
         adapter.notifyDataSetChanged();

@@ -1,7 +1,6 @@
 package com.example.droiddaemon.lcaldev.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,19 +12,16 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.droiddaemon.lcaldev.R;
 import com.example.droiddaemon.lcaldev.model.AllServiceModel;
-import com.example.droiddaemon.lcaldev.model.AllServiceRequestModel;
-import com.example.droiddaemon.lcaldev.model.Item;
 
 import java.util.ArrayList;
 
-
-public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
+public class VerticalAdapter extends RecyclerView.Adapter<VerticalAdapter.ViewHolder> {
 
     private ArrayList<AllServiceModel> mValues;
     private Context mContext;
-    protected ItemListener mListener;
+    protected VerticalAdapter.VItemListener mListener;
 
-    public HomeAdapter(Context context, ArrayList<AllServiceModel> values, ItemListener itemListener) {
+    public VerticalAdapter(Context context, ArrayList<AllServiceModel> values, VerticalAdapter.VItemListener itemListener) {
         mValues = values;
         mContext = context;
         mListener = itemListener;
@@ -33,7 +29,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private TextView textView;
+        private TextView title_textView, info_textView;
         private ImageView imageView;
         private RelativeLayout relativeLayout;
         private AllServiceModel item;
@@ -41,22 +37,25 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         public ViewHolder(View v) {
             super(v);
             v.setOnClickListener(this);
-            textView = (TextView) v.findViewById(R.id.textView);
+            title_textView = (TextView) v.findViewById(R.id.title);
+            info_textView = (TextView) v.findViewById(R.id.info);
             imageView = (ImageView) v.findViewById(R.id.imageView);
             relativeLayout = (RelativeLayout) v.findViewById(R.id.relativeLayout);
         }
 
         public void setData(AllServiceModel item) {
             this.item = item;
-            textView.setText(item.getName());
-//            imageView.setImageResource(item.drawable);
-//            relativeLayout.setBackgroundColor();
+            title_textView.setText(item.getName());
+            info_textView.setText(item.getCategory());
+
             Glide.with(mContext)
                     .load(item.getImageUrl())
                     .fitCenter()
                     .override(100, 100)
                     .centerCrop()
                     .into(imageView);
+
+
         }
 
         @Override
@@ -68,13 +67,13 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.row_item, parent, false);
-        return new ViewHolder(view);
+    public VerticalAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(mContext).inflate(R.layout.vertical_liat_row_items, parent, false);
+        return new VerticalAdapter.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(VerticalAdapter.ViewHolder viewHolder, int position) {
         viewHolder.setData(mValues.get(position));
     }
 
@@ -83,7 +82,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         return mValues.size();
     }
 
-    public interface ItemListener {
+    public interface VItemListener {
         void onItemClick(AllServiceModel item);
     }
 }

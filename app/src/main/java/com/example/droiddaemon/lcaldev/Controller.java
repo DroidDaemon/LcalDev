@@ -121,4 +121,34 @@ public class Controller {
 
 
     }
+
+    public void fetchBanners(Context context, final AllServiceFetchListener listener) {
+        APIInterface apiInterface = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
+        Call call1 = apiInterface.getAllServices();
+        new WebAPICall(context).doGetResponse("Loading Data...", call1, true, new WebAPICall.Response() {
+
+            @Override
+            public void onSuccessResponse(Object object) {
+                try {
+                    if (object instanceof ArrayList) {
+                        if (object != null && ((ArrayList) object).get(0) instanceof AllServiceRequestModel) {
+                            ArrayList<AllServiceRequestModel> allServiceRequestModels = (ArrayList<AllServiceRequestModel>) object;
+                            ArrayList<AllServiceModel> allserviceObject = RequestResponseFormatter.convertAllserviceObject(allServiceRequestModels);
+                            listener.onFetchAllserviceSuccess(allserviceObject);
+                        }
+                    }
+                } catch (Exception e) {
+//                    Log.e("", e);
+                }
+
+            }
+
+            @Override
+            public void onFailureResponse(String message) {
+                listener.onFetchAllserviceFailure(message);
+                // ToastUtills.showLongToast(getActivity(),message);
+
+            }
+        });
+    }
 }

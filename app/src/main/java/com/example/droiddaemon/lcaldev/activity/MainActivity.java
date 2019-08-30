@@ -105,8 +105,7 @@ public class MainActivity extends AppCompatActivity implements HomeAdapter.ItemL
     private void loadFragment(Fragment fragment) {
         // load fragment
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.home_fragment_container, fragment);
-        transaction.addToBackStack(null);
+        transaction.add(R.id.home_fragment_container, fragment);
         transaction.commit();
     }
 
@@ -141,5 +140,27 @@ public class MainActivity extends AppCompatActivity implements HomeAdapter.ItemL
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+//// if user is On CheckInScanFragment pop two fragment immediately
+//        FragmentManager fm = getSupportFragmentManager();
+//
+//        Fragment fragment = fm.findFragmentByTag(DashboardFragment.TAG);
+//        if (fragment instanceof DashboardFragment && fragment.isVisible()) {
+//
+//            for (Fragment frag : fm.getFragments()) {
+//                if (frag != null && frag.isVisible()) {
+//                    FragmentManager childFm = frag.getFragmentManager();
+//                    if (childFm.getBackStackEntryCount() > 0) {
+//                        childFm.popBackStack();
+//                        return;
+//                    }
+//                }
+//            }
+//        }
     }
 }
