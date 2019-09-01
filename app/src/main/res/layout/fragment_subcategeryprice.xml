@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/txt_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="32dp"
+        android:gravity="center"
+        android:text="What service do you need?"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <View
+        android:id="@+id/view_first"
+        android:layout_below="@+id/txt_header"
+        android:layout_width="match_parent"
+        android:layout_height=".5dp"
+        android:background="@android:color/holo_green_light" />
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_below="@+id/view_first"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
+
+    <View
+        android:layout_below="@+id/recyclerView"
+        android:id="@+id/view_three"
+        android:layout_width="match_parent"
+        android:layout_height=".5dp"
+        android:layout_above="@+id/btn_next"
+        android:background="@android:color/holo_green_light" />
+
+
+
+    <Button
+        android:id="@+id/btn_next"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:background="@android:color/black"
+        android:text="Next"
+        android:textColor="@android:color/white"
+        android:textAllCaps="false"/>
+</RelativeLayout>

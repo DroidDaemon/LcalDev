@@ -7,6 +7,8 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -131,10 +133,21 @@ public class DashboardFragment extends android.support.v4.app.Fragment implement
 
     @Override
     public void onItemClick(AllServiceModel item) {
-        Toast.makeText(getActivity(), item.getName() + " is clicked", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), item.getName() + " is clicked   ker", Toast.LENGTH_SHORT).show();
+        Bundle bundle = new Bundle();
+        bundle.putString("productId",item.getProductId());
+//        Fragment fragment = new SubCategoryFragment();
+        Fragment fragment = new SubCategoryPriceFragment();
+        fragment.setArguments(bundle);
+        loadFragment(fragment);
         getAddress();
     }
-
+    private void loadFragment(Fragment fragment) {
+        // load fragment
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.home_fragment_container, fragment);
+        transaction.commit();
+    }
     private void generateDataList(List<RetroItem> body) {
         Log.e("Response", body.toString());
         arrayList.add(new Item("Network Data", R.drawable.beer, "#000000"));
