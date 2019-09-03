@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -40,16 +41,17 @@ public class SubCategoryPriceFragment extends Fragment implements CategoryByIdLi
         Bundle bundle = getArguments();
 
         if(bundle != null){
-            String productId = bundle.getString("productId");
-            productId = "20";
-            controller.fetchCategoryById(context,this,""+productId);
+            int ParentId = bundle.getInt("ParentId");
+            ParentId = 20;
+            controller.fetchCategoryById(context,this,""+ParentId);
         }
 
 
 
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-
+        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
+                DividerItemDecoration.VERTICAL));
         return view;
     }
 

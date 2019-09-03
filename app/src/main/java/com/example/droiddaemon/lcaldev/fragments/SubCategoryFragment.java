@@ -2,6 +2,8 @@ package com.example.droiddaemon.lcaldev.fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -31,7 +33,7 @@ public class SubCategoryFragment extends Fragment implements CategoryByProductId
     private Context context;
     private Activity activity;
     private RecyclerView recyclerView;
-
+    private SubCategoryAdapter subCategoryAdapter;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -50,6 +52,8 @@ public class SubCategoryFragment extends Fragment implements CategoryByProductId
 
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
+                DividerItemDecoration.VERTICAL));
 //        setAdapter();
 
 
@@ -65,10 +69,27 @@ public class SubCategoryFragment extends Fragment implements CategoryByProductId
     void setAdapter(List<CategoryByProductIdModel.Child> categoryByProductIdModels){
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
-        SubCategoryAdapter subCategoryAdapter = new SubCategoryAdapter(getActivity(), categoryByProductIdModels);
+        subCategoryAdapter = new SubCategoryAdapter(getActivity(), categoryByProductIdModels);
         recyclerView.setAdapter(subCategoryAdapter);
-    }
+        subCategoryAdapter.setListener(new SubCategoryAdapter.onClick() {
+            @Override
+            public void clickListener(CategoryByProductIdModel.Child child) {
 
+                Toast.makeText(context, child.getParentId()+ " is clicked   aa gaya", Toast.LENGTH_SHORT).show();
+                Bundle bundle = new Bundle();
+                bundle.putInt("ParentId",child.getParentId());
+                Fragment fragment = new SubCategoryPriceFragment();
+                fragment.setArguments(bundle);
+                loadFragment(fragment);
+            }
+        });
+    }
+    private void loadFragment(Fragment fragment) {
+        // load fragment
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.home_fragment_container, fragment);
+        transaction.commit();
+    }
 
     @Override
     public void onFetchCategoryByProductIdeSuccess(List<CategoryByProductIdModel> categoryByProductIdModels) {
@@ -83,4 +104,6 @@ public class SubCategoryFragment extends Fragment implements CategoryByProductId
     public void onFetchCategoryByProductIdFailure(String msg) {
 
     }
+
+
 }

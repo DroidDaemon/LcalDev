@@ -24,6 +24,8 @@ import java.util.List;
 public class SubCategoryAdapter extends RecyclerView.Adapter<SubCategoryAdapter.MyViewHolder> {
     List<CategoryByProductIdModel.Child> categoryByProductIdModels;
     Context context;
+    private onClick listener;
+
     public SubCategoryAdapter(Context context, List<CategoryByProductIdModel.Child> categoryByProductIdModels) {
         this.context = context;
         this.categoryByProductIdModels = categoryByProductIdModels;
@@ -40,11 +42,15 @@ public class SubCategoryAdapter extends RecyclerView.Adapter<SubCategoryAdapter.
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context, categoryByProductIdModels.get(position).getParentId()+ " is clicked   hhhh", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, categoryByProductIdModels.get(position).getParentId()+ " is clicked   hhhh", Toast.LENGTH_SHORT).show();
+                if (listener != null) //call interface
+                    listener.clickListener(categoryByProductIdModels.get(position));
             }
         });
     }
-
+    public void setListener(onClick listener) {
+        this.listener = listener;
+    }
     @Override
     public int getItemCount() {
         return categoryByProductIdModels.size();
@@ -55,5 +61,9 @@ public class SubCategoryAdapter extends RecyclerView.Adapter<SubCategoryAdapter.
             super(itemView);
             name = (TextView) itemView.findViewById(R.id.name);
         }
+    }
+
+    public interface onClick {
+        void clickListener(CategoryByProductIdModel.Child child);
     }
 }

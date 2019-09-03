@@ -136,8 +136,8 @@ public class DashboardFragment extends android.support.v4.app.Fragment implement
         Toast.makeText(getActivity(), item.getName() + " is clicked   ker", Toast.LENGTH_SHORT).show();
         Bundle bundle = new Bundle();
         bundle.putString("productId",item.getProductId());
-//        Fragment fragment = new SubCategoryFragment();
-        Fragment fragment = new SubCategoryPriceFragment();
+        Fragment fragment = new SubCategoryFragment();
+//        Fragment fragment = new SubCategoryPriceFragment();
         fragment.setArguments(bundle);
         loadFragment(fragment);
         getAddress();
